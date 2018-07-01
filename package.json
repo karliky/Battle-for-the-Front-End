@@ -1,0 +1,16 @@
+{
+  "name": "tanks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blob.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "~2.12.0",
+    "eslint-config-airbnb": "~6.2.0",
+    "eslint-plugin-mootools": "^1.1.0"
+  }
+}

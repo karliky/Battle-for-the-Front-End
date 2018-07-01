@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Battle for the Front-End</title>
+  <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+  <script src="jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script src="phaser.2.6.2.min.js" type="text/javascript"></script>
+  <script src="blob.js" type="text/javascript"></script>
+  <script src="canvas-to-blob.js" type="text/javascript"></script>
+  <script src="filesaver.js" type="text/javascript"></script>
+  <script src="embed.js" type="text/javascript"></script>
+  <link href="https://fonts.googleapis.com/css?family=Audiowide" rel="stylesheet">
+
+  <style>
+  body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Audiowide', cursive;
+    font-size: 30px;
+    background-color: #070222;
+    color: #fff;
+    text-align: center;
+  }
+  #phaser-example > canvas {
+    display: inline-block !important;
+    border: 7px solid #80808040;
+    border-radius: 20px;
+    width: 1571px;
+    height: 610px;
+  }
+  .enemy_1{
+    display: none;
+  }
+  .container {
+    min-height: 400px;
+    display: flex;
+    display: -webkit-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+  }
+  .container:after {
+    display: block;
+    flex: 999 999 auto;
+  }
+  .item, canvas {
+    flex: 0 0 auto;
+    margin: 5px;
+  }
+  #editor{
+    border: 7px solid #80808040;
+    color: white;
+    font-size: 24px;
+    width: 600px;
+  }
+  #editor,.enemy_0{
+    height: 600px;
+  }
+  .player_name{
+    border: 7px solid #80808040;
+    background-color: #80808040;
+    width: 200px;
+    height: 56px;
+    font-size: 14px;
+    color: white;
+  }
+  </style>
+</head>
+<body>
+  <h1>Battle for the Front-End</h1>
+  <div class="container">
+    <div class="item">
+      <div id="editor" class="enemy_0"></div>
+    </div>
+    <div class="code item">
+      <div class="player_editor">
+        <div class="player container" style="min-height: auto;justify-content: end;">
+          <div id="avatar zero" class="item">
+            <img src="green-tank.png" alt="">
+          </div>
+          <div class="item">
+              <input class="player_name" oninput="resetGame(this);" id="player_name" type="text" name="" value="" placeholder="ENTER YOUR ROBOT'S NAME">
+          </div>
+          <div id="avatar zero" class="item">
+            <img src="red-tank.png" alt="">
+          </div>
+          <div class="item">
+            <select class="player_name" id="enemy_selected" name="">
+              <option value="dummy-robot.js" selected>Dummy robot</option>
+              <option value="advanced-robot.js">Advanced robot</option>
+            </select>
+          </div>
+          <div class="item">
+            <button type="button" class="player_name" name="button">Save</button>
+          </div>
+        </div>
+        <div id="phaser-example" ></div>
+      </div>
+      <div class="enemy_1">
+        <textarea name="name" rows="8" cols="80"></textarea>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    const IDE_HOOK = false;
+  </script>
+  <script src="editor/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+      var editor = ace.edit("editor");
+      editor.setTheme("ace/theme/monokai");
+      editor.session.setMode("ace/mode/javascript");
+      document.getElementById('editor').style.fontSize='16px';
+      let firstLaunch = true;
+      editor.session.on('change', resetGame);
+
+      var input = document.querySelector('#enemy_selected');
+
+      input.addEventListener('input', function() {
+        destroyGame();
+        if(input.value === 'advanced-robot.js') {
+          console.log('advanced-robot.js');
+          window.launchGame([robots[0], robots[2]]);
+        } else {
+          console.log('dummy.js');
+          window.launchGame([robots[0], robots[1]]);
+        }
+      });
+
+      function resetGame() {
+        if (firstLaunch) {
+          firstLaunch = false;
+          return;
+        };
+        destroyGame();
+        const enemyCode = document.querySelector('.enemy_1 > textarea').value;
+        modifyRobot(0, { code: editor.getValue(), name: getPlayerName() });
+        modifyRobot(1, { code: enemyCode, name: getEnemyName() });
+        window.launchGame([robots[0], robots[1]]);
+      }
+  </script>
+  <script type="text/javascript" src="game.js"></script>
+  <script type="text/javascript" src="launch.js"></script>
+</body>
+</html>
