@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Battle for the Front-End</title>
+  <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+
+  <style>
+  body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Arial', cursive;
+    background-color: #070222;
+    color: #fff;
+    text-align: center;
+  }
+  h2{
+    font-size: 20px;
+  }
+  h3{
+    font-size: 18px;
+    border-bottom: 1px solid grey;
+  }
+  h4{
+    background-color: #272822;
+    border: 7px solid #80808040;
+    color: #A6E22E;
+  }
+  code{
+    background-color: #272822;
+    border: 2px solid #80808040;
+    color: #A6E22E;
+  }
+  #inner {
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+    border: 7px solid #80808040;
+    border-radius: 20px;
+    background-color: #1c1446;
+    padding: 5px;
+  }
+  #editor{
+    border: 7px solid #80808040;
+    color: white;
+    font-size: 12px;
+    font-size: 24px;
+    width: 95%;
+    min-height: 200px;
+  }
+  ul li{
+    margin: 5px;
+  }
+  </style>
+</head>
+<body>
+  <h1>Battle for the Front-End</h1>
+  <div class="container">
+
+  </div>
+  <div id="outer" style="width:100%">
+    <div id="inner">
+      <h2>HOW TO WRITE MY ROBOT?</h2>
+      <h3>Keep reading to know more about the javascript robotic API</h3>
+      <p>Coding your robots is very easy and should be natural if you've ever had any Javascript experience.</p>
+      <p>This is the basic skeleton for your robot API</p>
+        <div id="editor">var Robot = function() {};
+
+Robot.prototype.onIdle = function(robot) {};
+
+Robot.prototype.onScannedRobot = function(robot) {};
+
+Robot.prototype.onWallCollision = function(robot, up, down, left, right) {};
+
+Robot.prototype.onHitByBullet = function(robot) {};
+return Robot;
+        </div>
+        <h3>Robot events</h3>
+        <h4>.onIdle</h4>
+        <p>The <code>onIdle</code> function is your robot game loop. This will be called every time your robot runs out of actions to do.</p>
+        <h4>.onWallCollision</h4>
+        <p>This method gets called whenever we hit a wall. The following variables are passed as argument <code>up, down, left, right</code> and one of them will be true depending on the direction in which you crashed.</p>
+        <h4>.onScannedRobot</h4>
+        <p>This event will be called whenever you see another robot. It's a very important event since it's usually when you want to fire.</p>
+        <h4>.onHitByBullet</h4>
+        <p>This event will be called whenever a bullet hits your robot.</p>
+        <h3>Robot methods</h3>
+        <p>The following methods are available inside your robot</p>
+        <ul>
+          <li><code>robot.ahead(units);</code> Moves the given amount ahead.</li>
+          <li><code>robot.rotateCannon(units);</code> Moves the given amount backwards.</li>
+          <li><code>robot.turn(units);</code> Rotates your robot the by the specified number of degrees.</li>
+          <li><code>robot.rotateCannon(units);</code> Rotates your cannon angle by the specified number of degrees.</li>
+          <li><code>robot.fire();</code> Fires your cannon. This function has a cooldown of 500ms before you can use it again.</li>
+          <li><code>robot.disappear();</code> Disappear your robot for two seconds. This method can only be used two times per fight.</li>
+        </ul>
+    </div>
+  </div>
+  <script src="editor/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript">
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+    document.getElementById('editor').style.fontSize='14px';
+  </script>
+</body>
+</html>
