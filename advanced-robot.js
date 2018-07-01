@@ -5,8 +5,8 @@
 
   Robot.prototype.onIdle = function(robot) {
     robot.ahead(20);
+    robot.rotateCannon(90);
     robot.turn(20);
-    robot.rotateCannon(360);
   };
 
   Robot.prototype.onScannedRobot = function(robot) {
