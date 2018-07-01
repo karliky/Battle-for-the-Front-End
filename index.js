@@ -17,7 +17,16 @@ app.post('/save', function(req, res) {
   });
 
 });
-
+app.get('/robots', function(req, res) {
+  const filePath = path.join(__dirname, 'robots');
+  fs.readdir(filePath, (err, response) => {
+    const result = response
+    .filter((file) => file.indexOf('.js') !== -1)
+    .map((file) => file.replace('.js', ''));
+    console.log('result', result)
+    res.send(result);
+  })
+});
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });

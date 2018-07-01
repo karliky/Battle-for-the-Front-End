@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Battle for the Front-End</title>
+  <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+  <script src="jquery-2.0.3.min.js" type="text/javascript"></script>
+  <script src="phaser.2.6.2.min.js" type="text/javascript"></script>
+  <script src="blob.js" type="text/javascript"></script>
+  <script src="canvas-to-blob.js" type="text/javascript"></script>
+  <script src="filesaver.js" type="text/javascript"></script>
+  <script src="embed.js" type="text/javascript"></script>
+  <link href="https://fonts.googleapis.com/css?family=Audiowide" rel="stylesheet">
+
+  <style>
+  body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Audiowide', cursive;
+    font-size: 30px;
+    background-color: #070222;
+    color: #fff;
+    text-align: center;
+  }
+  canvas {
+    display: inline-block !important;
+    border: 7px solid #80808040;
+    border-radius: 20px;
+    width: 1571px;
+    height: 610px;
+    display: none !important;
+  }
+  .container {
+    display: flex;
+    justify-content: center;
+  }
+  .wrapper{
+    border: 7px solid #80808040;
+    border-radius: 20px;
+    background-color: #1c1446;
+  }
+  .item, canvas {
+    flex: 0 0 auto;
+    margin: 5px;
+  }
+
+  .selector {
+     -webkit-appearance: button;
+     -webkit-border-radius: 2px;
+     -webkit-box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+     -webkit-padding-end: 20px;
+     -webkit-padding-start: 2px;
+     -webkit-user-select: none;
+     background-image: url('./arrows.png'), -webkit-linear-gradient(#FAFAFA, #F4F4F4 40%, #E5E5E5);
+     background-position: 97% center;
+     background-repeat: no-repeat;
+     border: 1px solid #AAA;
+     color: #555;
+     font-size: inherit;
+     margin: 20px;
+     overflow: hidden;
+     padding: 5px 10px;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+     width: 300px;
+  }
+
+  .btn {
+    background: #d93434;
+    background-image: -webkit-linear-gradient(top, #d93434, #b82b2b);
+    background-image: -moz-linear-gradient(top, #d93434, #b82b2b);
+    background-image: -ms-linear-gradient(top, #d93434, #b82b2b);
+    background-image: -o-linear-gradient(top, #d93434, #b82b2b);
+    background-image: linear-gradient(to bottom, #d93434, #b82b2b);
+    -webkit-border-radius: 28;
+    -moz-border-radius: 28;
+    border-radius: 28px;
+    font-family: Arial;
+    color: #ffffff;
+    font-size: 40px;
+    padding: 10px 20px 10px 20px;
+    text-decoration: none;
+    border-color: #c34e4f;
+    margin: 5px;
+  }
+
+  </style>
+</head>
+<body>
+  <h1>Battle for the Front-End</h1>
+  <div class="wrapper">
+    <h2>Choose Your Enemies!</h2>
+    <div class="container">
+      <div class="item">
+        Enemy 1:
+        <select class="selector enemy_1">
+          <option>Choose a robot</option>
+        </select>
+      </div>
+      <div class="item">
+        Enemy 2:
+        <select class="selector enemy_2">
+          <option>Choose a robot</option>
+        </select>
+      </div>
+    </div>
+    <div class="start">
+      <button type="button" name="button" class="btn">Fight!</button>
+    </div>
+  </div>
+  <script type="text/javascript">
+    const IDE_HOOK = false;
+  </script>
+  <script>
+    function fillSelect(_selector, robots) {
+      const selector = document.querySelector(_selector);
+      robots.forEach((robotName) => {
+        var opt = document.createElement('option');
+        opt.value = robotName;
+        opt.innerHTML = robotName;
+        selector.appendChild(opt);
+      });
+    }
+    function getAvailableRobots() {
+      fetch('/robots')
+      .then(response => response.json())
+      .then(function(json) {
+        fillSelect('.enemy_1', json);
+        fillSelect('.enemy_2', json);
+      });
+    }
+    getAvailableRobots();
+    //window.launchGame([robots[0], robots[1]]);
+  </script>
+</body>
+</html>
