@@ -117,17 +117,25 @@
       editor.session.on('change', resetGame);
 
       var input = document.querySelector('#enemy_selected');
-
+      const enemyCode = document.querySelector('.enemy_1 > textarea');
       input.addEventListener('input', function() {
         destroyGame();
         if(input.value === 'advanced-robot.js') {
-          console.log('advanced-robot.js');
+          enemyCode.value = robots[2].asStr;
           window.launchGame([robots[0], robots[2]]);
         } else {
-          console.log('dummy.js');
+          enemyCode.value = robots[1].asStr;
+
           window.launchGame([robots[0], robots[1]]);
         }
       });
+
+      function getTankIndex() {
+        if(input.value === 'advanced-robot.js') {
+          return 2;
+        }
+        return 1;
+      }
 
       function resetGame() {
         if (firstLaunch) {
@@ -137,8 +145,8 @@
         destroyGame();
         const enemyCode = document.querySelector('.enemy_1 > textarea').value;
         modifyRobot(0, { code: editor.getValue(), name: getPlayerName() });
-        modifyRobot(1, { code: enemyCode, name: getEnemyName() });
-        window.launchGame([robots[0], robots[1]]);
+        modifyRobot(getTankIndex(), { code: enemyCode, name: getEnemyName() });
+        window.launchGame([robots[0], robots[getTankIndex()]]);
       }
   </script>
   <script type="text/javascript" src="game.js"></script>

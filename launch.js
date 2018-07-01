@@ -28,7 +28,7 @@ getRobot('robot.js', (robotCode) => {
 function addRobot(robotCode) {
   try {
     const robot = eval('(() => { ' + robotCode.code + ' })();');
-    robots.push({ code: robot, name: robotCode.name });
+    robots.push({ code: robot, name: robotCode.name, asStr: robotCode.code });
   } catch (e) {
     console.error(e);
   }
@@ -37,7 +37,7 @@ function addRobot(robotCode) {
 function modifyRobot(index, robotCode) {
   try {
     const robot = eval('(() => { ' + robotCode.code + ' })();');
-    robots[index] = { code: robot, name: robotCode.name };
+    robots[index] = { code: robot, name: robotCode.name, asStr: robotCode.code };
   } catch (e) {
     console.error(e);
   }

@@ -21,7 +21,7 @@ window.launchGame = (function(robotsCode) {
     this.maxhealth = 10;
 
     this.bullets = bullets;
-    this.fireRate = 200;
+    this.fireRate = 800;
     this.nextFire = 0;
     this.nextStepTime = 0;
     this.nextStepFireRate = 1000;

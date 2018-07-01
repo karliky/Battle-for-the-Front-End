@@ -3,9 +3,9 @@
   };
 
   Robot.prototype.onIdle = function(robot) {
-    robot.ahead(60);
+    robot.ahead(30);
     robot.rotateCannon(360);
-    robot.back(60);
+    robot.back(30);
     robot.rotateCannon(360);
   };
 
