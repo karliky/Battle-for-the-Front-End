@@ -94,7 +94,7 @@
             </select>
           </div>
           <div class="item">
-            <button type="button" class="player_name" name="button">Save</button>
+            <button type="button" class="player_name" id="save_tank" name="button">Save</button>
           </div>
         </div>
         <div id="phaser-example" ></div>
@@ -148,6 +148,30 @@
         modifyRobot(getTankIndex(), { code: enemyCode, name: getEnemyName() });
         window.launchGame([robots[0], robots[getTankIndex()]]);
       }
+
+      var save = document.querySelector('#save_tank');
+      save.addEventListener('click', () => {
+        const url = "/save";
+        const playerName = getPlayerName();
+        if (!playerName || playerName === 'Your robot') return;
+        console.log('playerName', playerName)
+        fetch(url, {
+            method : "POST",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              code: editor.getValue(),
+              name: playerName
+            })
+        }).then(
+            response => response.text()
+        ).then(
+            response => console.log('Robot saved', response)
+        );
+      });
+
   </script>
   <script type="text/javascript" src="game.js"></script>
   <script type="text/javascript" src="launch.js"></script>
