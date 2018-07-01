@@ -168,7 +168,11 @@
         }).then(
             response => response.text()
         ).then(
-            response => console.log('Robot saved', response)
+            response => {
+              save.innerText = 'Saved!'
+              setTimeout(() => (save.innerText = 'Save'), 1000);
+              console.log('Robot saved', response);
+            }
         );
       });
 
