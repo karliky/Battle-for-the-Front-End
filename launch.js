@@ -10,21 +10,6 @@ function getEnemyName() {
   return e.options[e.selectedIndex].text;
 }
 
-getRobot('robot.js', (robotCode) => {
-  const robotName = getPlayerName();
-  addRobot({ code: robotCode, name: robotName });
-  var editor = ace.edit('editor');
-  editor.setValue(robotCode);
-  getRobot('dummy-robot.js', (robotCode) => {
-    document.querySelector('.enemy_1 > textarea').value = robotCode;
-    addRobot({ code: robotCode, name: getEnemyName() });
-    getRobot('advanced-robot.js', (robotCode) => {
-      addRobot({ code: robotCode, name: 'Advanced robot' });
-      window.launchGame([robots[0], robots[1]]);
-    });
-  });
-});
-
 function addRobot(robotCode) {
   try {
     const robot = eval('(() => { ' + robotCode.code + ' })();');

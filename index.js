@@ -27,6 +27,11 @@ app.get('/robots', function(req, res) {
     res.send(result);
   })
 });
+app.get('/robot/:fileName', function(req, res) {
+  const filePath = path.join(__dirname, 'robots', req.params.fileName + '.js');
+  console.log('filePath', filePath);
+  fs.readFile(filePath, (err, response) => res.send(response));
+});
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });

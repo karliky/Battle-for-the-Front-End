@@ -28,7 +28,6 @@
     border-radius: 20px;
     width: 1571px;
     height: 610px;
-    display: none !important;
   }
   .container {
     display: flex;
@@ -89,54 +88,25 @@
 <body>
   <h1>Battle for the Front-End</h1>
   <div class="wrapper">
-    <h2>Choose Your Enemies!</h2>
-    <div class="container">
-      <div class="item">
-        Enemy 1:
-        <select class="selector enemy_1">
-          <option>Choose a robot</option>
-        </select>
-      </div>
-      <div class="item">
-        Enemy 2:
-        <select class="selector enemy_2">
-          <option>Choose a robot</option>
-        </select>
-      </div>
-    </div>
-    <div class="start">
-      <button type="button" name="button" class="btn">Fight!</button>
-    </div>
+    <div id="phaser-example" ></div>
   </div>
   <script type="text/javascript">
     const IDE_HOOK = false;
   </script>
+  <script type="text/javascript" src="launch.js"></script>
+  <script type="text/javascript" src="game.js"></script>
   <script>
-    function fillSelect(_selector, robots) {
-      const selector = document.querySelector(_selector);
-      robots.forEach((robotName) => {
-        var opt = document.createElement('option');
-        opt.value = robotName;
-        opt.innerHTML = robotName;
-        selector.appendChild(opt);
-      });
+    function getRobot(url, cb) {
+      fetch('robot/' + url).then(response => response.text()).then(cb);
     }
-    function getAvailableRobots() {
-      fetch('/robots')
-      .then(response => response.json())
-      .then(function(json) {
-        fillSelect('.enemy_1', json);
-        fillSelect('.enemy_2', json);
+    const robot1 = 'karliky';
+    const robot2 = 'Your robot';
+    getRobot(robot1, (enemy1) => {
+      getRobot(robot2, (enemy2) => {
+        addRobot({ code: enemy1, name: robot1 });
+        addRobot({ code: enemy2, name: robot2 });
+        window.launchGame([robots[0], robots[1]]);
       });
-    }
-    getAvailableRobots();
-    const launch = document.querySelector('.btn');
-    launch.addEventListener('click', () => {
-      var enemy_1 = document.querySelector(".enemy_1");
-      var enemy_1Selected = enemy_1.options[enemy_1.selectedIndex].value;
-      var enemy_2 = document.querySelector(".enemy_2");
-      var enemy_2Selected = enemy_2.options[enemy_2.selectedIndex].value;
-      window.location.href = '/fight.html?enemy_1=' + enemy_1Selected + '&enemy_2=' + enemy_2Selected + '&no_cache=' + (+ new Date());
     });
   </script>
 </body>

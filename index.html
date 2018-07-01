@@ -108,6 +108,8 @@
     const IDE_HOOK = false;
   </script>
   <script src="editor/ace.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" src="game.js"></script>
+  <script type="text/javascript" src="launch.js"></script>
   <script>
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/monokai");
@@ -154,7 +156,10 @@
         const url = "/save";
         const playerName = getPlayerName();
         if (!playerName || playerName === 'Your robot') return;
-        console.log('playerName', playerName)
+        if( /[^a-zA-Z0-9\-\/]/.test(playerName) ) {
+            alert('Invalid name');
+            return false;
+        }
         fetch(url, {
             method : "POST",
             headers: {
@@ -175,9 +180,20 @@
             }
         );
       });
-
+      getRobot('robot.js', (robotCode) => {
+        const robotName = getPlayerName();
+        addRobot({ code: robotCode, name: robotName });
+        var editor = ace.edit('editor');
+        editor.setValue(robotCode);
+        getRobot('dummy-robot.js', (robotCode) => {
+          document.querySelector('.enemy_1 > textarea').value = robotCode;
+          addRobot({ code: robotCode, name: getEnemyName() });
+          getRobot('advanced-robot.js', (robotCode) => {
+            addRobot({ code: robotCode, name: 'Advanced robot' });
+            window.launchGame([robots[0], robots[1]]);
+          });
+        });
+      });
   </script>
-  <script type="text/javascript" src="game.js"></script>
-  <script type="text/javascript" src="launch.js"></script>
 </body>
 </html>
