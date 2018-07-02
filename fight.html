@@ -105,8 +105,8 @@
   <script type="text/javascript" src="launch.js"></script>
   <script type="text/javascript" src="game.js"></script>
   <script>
-    const robot1 = 'karliky';
-    const robot2 = 'Your robot';
+    const robot1 = getParameterByName('enemy_1');
+    const robot2 = getParameterByName('enemy_2');
     var h2 = document.querySelector('h2');
 
     var BOARD_SIZE_WIDTH = 800;
@@ -132,6 +132,16 @@
     function setWinner(winnerId) {
       const name = (winnerId == 0) ? robot1 : robot2;
       h2.innerHTML = name + ' wins!';
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
     }
   </script>
 </body>
