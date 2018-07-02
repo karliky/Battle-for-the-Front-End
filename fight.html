@@ -82,11 +82,20 @@
     border-color: #c34e4f;
     margin: 5px;
   }
-
+  .versus{
+    color: white;
+  }
+  .robot1{
+    color: #41f477;
+  }
+  .robot2{
+    color: #f44242;
+  }
   </style>
 </head>
 <body>
   <h1>Battle for the Front-End</h1>
+  <h2></h2>
   <div class="wrapper">
     <div id="phaser-example" ></div>
   </div>
@@ -96,18 +105,34 @@
   <script type="text/javascript" src="launch.js"></script>
   <script type="text/javascript" src="game.js"></script>
   <script>
-    function getRobot(url, cb) {
-      fetch('robot/' + url).then(response => response.text()).then(cb);
-    }
     const robot1 = 'karliky';
     const robot2 = 'Your robot';
+    var h2 = document.querySelector('h2');
+
+    var BOARD_SIZE_WIDTH = 800;
+    var BOARD_SIZE_HEIGHT = 600;
+
+    BuildHeader(robot1, robot2);
+
     getRobot(robot1, (enemy1) => {
       getRobot(robot2, (enemy2) => {
         addRobot({ code: enemy1, name: robot1 });
         addRobot({ code: enemy2, name: robot2 });
-        window.launchGame([robots[0], robots[1]]);
+        window.launchGame([robots[0], robots[1]], (err, winner) => {
+          setWinner(winner.tank.name);
+        });
       });
     });
+    function getRobot(url, cb) {
+      fetch('robot/' + url).then(response => response.text()).then(cb);
+    }
+    function BuildHeader(enemy1, enemy2) {
+      h2.innerHTML = '<span class="robot1">' + enemy1 + '</span> <span class="versus">VS</span> <span class="robot2">' + enemy2 + '</span>';
+    }
+    function setWinner(winnerId) {
+      const name = (winnerId == 0) ? robot1 : robot2;
+      h2.innerHTML = name + ' wins!';
+    }
   </script>
 </body>
 </html>

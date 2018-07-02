@@ -40,13 +40,16 @@
     background-color: #1c1446;
     padding: 5px;
   }
-  #editor{
+  #editor,#example{
     border: 7px solid #80808040;
     color: white;
     font-size: 12px;
     font-size: 24px;
     width: 95%;
     min-height: 200px;
+  }
+  #example{
+    min-height: 100px;
   }
   ul li{
     margin: 5px;
@@ -70,7 +73,7 @@ Robot.prototype.onIdle = function(robot) {};
 
 Robot.prototype.onScannedRobot = function(robot) {};
 
-Robot.prototype.onWallCollision = function(robot, up, down, left, right) {};
+Robot.prototype.onWallCollision = function(robot) {};
 
 Robot.prototype.onHitByBullet = function(robot) {};
 return Robot;
@@ -85,15 +88,33 @@ return Robot;
         <h4>.onHitByBullet</h4>
         <p>This event will be called whenever a bullet hits your robot.</p>
         <h3>Robot methods</h3>
-        <p>The following methods are available inside your robot</p>
+        <p>The following methods are available inside your robot:</p>
         <ul>
           <li><code>robot.ahead(units);</code> Moves the given amount ahead.</li>
-          <li><code>robot.rotateCannon(units);</code> Moves the given amount backwards.</li>
+          <li><code>robot.back(units);</code> Moves the given amount backwards.</li>
+          <li><code>robot.stop();</code> Stops your tank for the given amount of time in units.</li>
+        </ul>
+        <ul>
           <li><code>robot.turn(units);</code> Rotates your robot the by the specified number of degrees.</li>
+          <li><code>robot.turnRight(units);</code> Rotates your robot to the right.</li>
+          <li><code>robot.turnLeft(units);</code> Rotates your robot to the left.</li>
           <li><code>robot.rotateCannon(units);</code> Rotates your cannon angle by the specified number of degrees.</li>
+        </ul>
+        <ul>
           <li><code>robot.fire();</code> Fires your cannon. This function has a cooldown of 500ms before you can use it again.</li>
           <li><code>robot.disappear();</code> Disappear your robot for two seconds. This method can only be used two times per fight.</li>
         </ul>
+        <p>The health of your robot can be accessed too:</p>
+        <ul>
+          <li><code>robot.health</code> Your tanks health</li>
+        </ul>
+        <p>Example of usage:</p>
+        <div id="example">Robot.prototype.onHitByBullet = function(robot) {
+  if (robot.health < 4) {
+    robot.disappear();
+  }
+};
+        </div>
     </div>
   </div>
   <script src="editor/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -102,6 +123,10 @@ return Robot;
     editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/javascript");
     document.getElementById('editor').style.fontSize='14px';
+    var editor = ace.edit("example");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/javascript");
+    document.getElementById('example').style.fontSize='14px';
   </script>
 </body>
 </html>

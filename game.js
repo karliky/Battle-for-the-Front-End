@@ -1,5 +1,5 @@
 var game;
-window.launchGame = (function(robotsCode) {
+window.launchGame = (function(robotsCode, cb) {
 
   var land;
   var enemies;
@@ -8,8 +8,8 @@ window.launchGame = (function(robotsCode) {
   var explosions;
   var logo;
 
-  var BOARD_SIZE_WIDTH = 800;
-  var BOARD_SIZE_HEIGHT = 500;
+  var BOARD_SIZE_WIDTH = window.BOARD_SIZE_WIDTH || 800;
+  var BOARD_SIZE_HEIGHT = window.BOARD_SIZE_HEIGHT || 500;
 
   const Phaser = window.Phaser;
   const EnemyTank = function (index, game, bullets) {
@@ -172,6 +172,7 @@ window.launchGame = (function(robotsCode) {
     const aliveEnemies = enemies.filter((enemy) => enemy.alive);
     if (aliveEnemies.length === 1) {
       game.paused = true;
+      if (cb) return cb(null, aliveEnemies[0]);
     }
     for (var i = 0; i < enemies.length; i++) {
       if (enemies[i].alive) {
@@ -190,7 +191,7 @@ window.launchGame = (function(robotsCode) {
     healthBar.width = healthBar.width - healthBar.width / enemies[tank.name].health + 1;
     const robot = enemies[tank.name];
     if (!destroyed) {
-      if (robots[tank.name].onHitByBullet.getBody() > 5) robot.resetSteps();
+      if (robots[tank.name].onHitByBullet.getBody().length > 5) robot.resetSteps();
       robots[tank.name].onHitByBullet(robot);
     } else {
       var explosionAnimation = explosions.getFirstExists(false);
@@ -209,6 +210,8 @@ window.launchGame = (function(robotsCode) {
     let newStep = true;
     let steps = [];
     let disappearCount = 2;
+    let nextLookAroundFireRate = 500;
+    let nextLookAround = 0;
     robot.damage = function() {
       this.health -= 1;
       if (this.health <= 0) {
@@ -224,6 +227,15 @@ window.launchGame = (function(robotsCode) {
     robot.clone = () => {};
     robot.ahead = (units) => {
       steps.push({ type: 'ahead', units });
+    };
+    robot.stop = (units) => {
+      steps.push({ type: 'stop', units });
+    };
+    robot.turnRight = (units) => {
+      steps.push({ type: 'turnRight', units });
+    };
+    robot.turnLeft = (units) => {
+      steps.push({ type: 'turnLeft', units });
     };
     robot.back = (units) => {
       steps.push({ type: 'back', units });
@@ -281,16 +293,20 @@ window.launchGame = (function(robotsCode) {
         var enemy = enemies[i];
         if (robot.tank.name === enemy.tank.name) continue;
         if (!enemy.alive || hasDisappeared()) continue;
+
         var angleRadians = Math.atan2(enemy.tank.y - robot.tank.y, enemy.tank.x - robot.tank.x);
         var rotationDeg = toDegrees(robot.turret.rotation);
         var angleDeg = toDegrees(angleRadians);
         if (enemy.tank.alpha !== 1) continue;
         if (rotationDeg >= angleDeg - 4 && rotationDeg <= angleDeg + 4) {
-          if (robots[robot.tank.name].onScannedRobot.length > 10) robot.resetSteps();
           var a = enemy.tank.x - robot.tank.x;
           var b = enemy.tank.y - robot.tank.y;
           var distance = Math.sqrt(a * a + b * b);
-          robots[robot.tank.name].onScannedRobot(robot, Math.ceil(distance));
+          if (game.time.now > nextLookAround) {
+            if (robots[robot.tank.name].onScannedRobot.getBody().length > 21) robot.resetSteps();
+            nextLookAround = game.time.now + nextLookAroundFireRate;
+            robots[robot.tank.name].onScannedRobot(robot, Math.ceil(distance));
+          }
         }
       }
     };
@@ -307,12 +323,39 @@ window.launchGame = (function(robotsCode) {
       robot.lookAround();
       progress -= 2;
     };
+    robot.stopMovement = (units) => {
+      if (newStep) progress = units;
+      newStep = false;
+      if (progress > 0) {
+        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
+      } else {
+        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
+        newStep = true;
+        index++;
+      }
+      robot.lookAround();
+      progress -= 1;
+    };
     robot.turnAround = (units) => {
       if (newStep) progress = units;
       newStep = false;
       if (progress > 0) {
         robot.tank.angle += 2;
         robot.turret.angle += 2;
+        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
+      } else {
+        newStep = true;
+        index++;
+      }
+      progress -= 2;
+    };
+    robot._turnLeft = (units) => robot.turnAround(units);
+    robot._turnRight = (units) => {
+      if (newStep) progress = units;
+      newStep = false;
+      if (progress > 0) {
+        robot.tank.angle -= 2;
+        robot.turret.angle -= 2;
         game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
       } else {
         newStep = true;
@@ -333,10 +376,12 @@ window.launchGame = (function(robotsCode) {
       setTimeout(() => {
         myTank.tank.alpha = 1;
         myTank.turret.alpha = 1;
-      }, 2000);
+      }, 2500);
     };
     robot.resetSteps = () => {
       steps = [];
+      newStep = true;
+      progress = 0;
       index = 0;
     };
     robot.getSteps = () => {
@@ -362,7 +407,10 @@ window.launchGame = (function(robotsCode) {
       if (currStep.type === 'back') robot.moveBack(currStep.units || 10);
       if (currStep.type === 'rotateCannon') robot.rotateTurret(currStep.units || 10);
       if (currStep.type === 'turn') robot.turnAround(currStep.units || 10);
+      if (currStep.type === 'turnRight') robot._turnRight(currStep.units || 10);
+      if (currStep.type === 'turnLeft') robot._turnLeft(currStep.units || 10);
       if (currStep.type === 'fire') robot.fire();
+      if (currStep.type === 'stop') robot.stopMovement(currStep.units || 10);
       if (currStep.type === 'disappear') robot.makeDisappear(100);
       robot.lookAround();
     };

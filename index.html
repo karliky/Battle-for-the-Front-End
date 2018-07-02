@@ -50,11 +50,22 @@
     flex: 0 0 auto;
     margin: 5px;
   }
+  .docs{
+    font-size: 12px;
+    color: white;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    font-family: Arial;
+  }
+  .docs > a{
+    color: white;
+  }
   #editor{
     border: 7px solid #80808040;
     color: white;
     font-size: 24px;
-    width: 600px;
+    width: 500px;
   }
   #editor,.enemy_0{
     height: 600px;
@@ -62,10 +73,11 @@
   .player_name{
     border: 7px solid #80808040;
     background-color: #80808040;
-    width: 200px;
-    height: 56px;
+    width: 150px;
     font-size: 14px;
     color: white;
+    vertical-align: middle;
+    margin-top: -15px;
   }
   </style>
 </head>
@@ -74,6 +86,7 @@
   <div class="container">
     <div class="item">
       <div id="editor" class="enemy_0"></div>
+      <p class="docs"><a href="docs.html" target="_blank">Read the docs!</a></p>
     </div>
     <div class="code item">
       <div class="player_editor">
@@ -82,7 +95,7 @@
             <img src="green-tank.png" alt="">
           </div>
           <div class="item">
-              <input class="player_name" oninput="resetGame(this);" id="player_name" type="text" name="" value="" placeholder="ENTER YOUR ROBOT'S NAME">
+              <input class="player_name" oninput="resetGame(this);" id="player_name" type="text" name="" value="" placeholder="Robot name" style="height: 40px;">
           </div>
           <div id="avatar zero" class="item">
             <img src="red-tank.png" alt="">
@@ -111,10 +124,13 @@
   <script type="text/javascript" src="game.js"></script>
   <script type="text/javascript" src="launch.js"></script>
   <script>
+      var BOARD_SIZE_WIDTH = 650;
+      var BOARD_SIZE_HEIGHT = 500;
+
       var editor = ace.edit("editor");
       editor.setTheme("ace/theme/monokai");
       editor.session.setMode("ace/mode/javascript");
-      document.getElementById('editor').style.fontSize='16px';
+      document.getElementById('editor').style.fontSize='13px';
       let firstLaunch = true;
       editor.session.on('change', resetGame);
 
