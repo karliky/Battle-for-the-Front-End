@@ -212,6 +212,7 @@ window.launchGame = (function(robotsCode, cb) {
     let disappearCount = 2;
     let nextLookAroundFireRate = 500;
     let nextLookAround = 0;
+    let boostFactor = 0;
     robot.damage = function() {
       this.health -= 1;
       if (this.health <= 0) {
@@ -263,7 +264,7 @@ window.launchGame = (function(robotsCode, cb) {
       if (newStep) progress = units;
       newStep = false;
       if (progress > 0) {
-        game.physics.arcade.velocityFromRotation(robot.tank.rotation, -120, robot.tank.body.velocity);
+        game.physics.arcade.velocityFromRotation(robot.tank.rotation, -120 - boostFactor, robot.tank.body.velocity);
       } else {
         game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
         newStep = true;
@@ -275,7 +276,7 @@ window.launchGame = (function(robotsCode, cb) {
       if (newStep) progress = units;
       newStep = false;
       if (progress > 0) {
-        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 120, robot.tank.body.velocity);
+        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 120 + boostFactor, robot.tank.body.velocity);
       } else {
         game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
         newStep = true;
@@ -350,6 +351,13 @@ window.launchGame = (function(robotsCode, cb) {
       progress -= 2;
     };
     robot._turnLeft = (units) => robot.turnAround(units);
+    robot.boost = (units) => {
+      robot.boost = () => {};
+      boostFactor = 100;
+      setTimeout(() => {
+        boostFactor = 0;
+      }, 5000);
+    }
     robot._turnRight = (units) => {
       if (newStep) progress = units;
       newStep = false;
