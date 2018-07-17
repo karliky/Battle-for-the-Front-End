@@ -273,7 +273,7 @@ window.launchGame = (function(robotsCode, cb) {
       progress -= 1;
     };
     robot.moveAhead = (units) => {
-      if (newStep) progress = units;
+      if (newStep) progress = Math.abs(units);
       newStep = false;
       if (progress > 0) {
         game.physics.arcade.velocityFromRotation(robot.tank.rotation, 120 + boostFactor, robot.tank.body.velocity);
@@ -311,18 +311,22 @@ window.launchGame = (function(robotsCode, cb) {
         }
       }
     };
+
+    function setAngle(stepValue){
+      robot.turret.angle = robot.turret.angle + stepValue;
+      game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
+    }
     robot.rotateTurret = (units) => {
       if (newStep) progress = units;
+      var stepValue = progress < 0 ? -2 : 2;
       newStep = false;
-      if (progress > 0) {
-        robot.turret.angle += 2;
-        game.physics.arcade.velocityFromRotation(robot.tank.rotation, 0, robot.tank.body.velocity);
-      } else {
-        newStep = true;
-        index++;
+      setAngle(stepValue);
+      if (progress === 0) {
+          newStep = true;
+          index++;
       }
       robot.lookAround();
-      progress -= 2;
+      progress -= stepValue;
     };
     robot.stopMovement = (units) => {
       if (newStep) progress = units;
